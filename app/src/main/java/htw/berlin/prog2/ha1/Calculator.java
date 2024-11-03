@@ -81,7 +81,6 @@ public class Calculator {
             default -> throw new IllegalArgumentException();
         };
         screen = Double.toString(result);
-        if(screen.equals("NaN")) screen = "Error";
         if(screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10);
 
     }
@@ -94,7 +93,7 @@ public class Calculator {
      * Beim zweimaligem Drücken, oder wenn bereits ein Trennzeichen angezeigt wird, passiert nichts.
      */
     public void pressDotKey() {
-        if(!screen.contains(".")) screen = screen + ".";
+        if(!screen.endsWith(".")) screen = screen + ".";
     }
 
     /**
@@ -119,15 +118,20 @@ public class Calculator {
      */
     public void pressEqualsKey() {
         var result = switch(latestOperation) {
+            case "√" -> Math.sqrt(Double.parseDouble(screen));// todo methode testNegativeSquare
+
             case "+" -> latestValue + Double.parseDouble(screen);
             case "-" -> latestValue - Double.parseDouble(screen);
             case "x" -> latestValue * Double.parseDouble(screen);
             case "/" -> latestValue / Double.parseDouble(screen);
+
             default -> throw new IllegalArgumentException();
         };
         screen = Double.toString(result);
-        if(screen.equals("Infinity")) screen = "Error";
         if(screen.endsWith(".0")) screen = screen.substring(0,screen.length()-2);
         if(screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10);
+
+        if(screen.equals("NaN"))screen = "error"; //rote Test todo testNegativeSquare
+        if(screen.equals("Infinity"))screen = "error"; //rote test todo methode testNullDivision
     }
 }
